@@ -6,8 +6,8 @@ namespace TripLog
 {
 	public class NewEntryViewModel : BaseViewModel
 	{
-		public NewEntryViewModel ()
-		{
+		public NewEntryViewModel(INavService navService) : base(navService)
+        {
 			Date = DateTime.Today;
 			Rating = 1;
 		}
@@ -19,8 +19,7 @@ namespace TripLog
 		public Command SaveCommand
 		{
 			get {
-				return _saveCommand ?? (_saveCommand = new Command
-					(ExecuteSaveCommand, CanSave));
+				return _saveCommand ?? (_saveCommand = new Command(async () => await ExecuteSaveCommand(), CanSave));
 			}
 		}
 

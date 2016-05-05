@@ -7,7 +7,7 @@ namespace TripLog
 {
 	public class MainViewModel : BaseViewModel
 	{
-		public MainViewModel () : base ()
+		public MainViewModel (INavService navService) : base(navService)
 		{
 			LogEntries = new ObservableCollection<TripLogEntry> ();
 		}

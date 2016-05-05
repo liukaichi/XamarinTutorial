@@ -5,8 +5,8 @@ namespace TripLog
 {
 	public class DetailViewModel : BaseViewModel<TripLogEntry>
 	{
-		public DetailViewModel () : base()
-		{
+		public DetailViewModel(INavService navService)
+        {
 			
 		}
 
