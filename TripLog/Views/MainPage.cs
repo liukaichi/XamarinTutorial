@@ -7,18 +7,20 @@ namespace TripLog.Views
 {
 	public class MainPage : ContentPage
 	{
+		MainViewModel _vm {
+			get { return BindingContext as MainViewModel; }
+		}
 		public MainPage ()
 		{
+			
 			var newButton = new ToolbarItem { 
 				Text = "New" 
 			}; 
-			newButton.Clicked += (sender, e) => 
-			{ 
-				Navigation.PushAsync( new NewEntryPage());
-			}; 
+			newButton.SetBinding (ToolbarItem.CommandProperty, "NewCommand");
+
 			ToolbarItems.Add (newButton);
 
-			BindingContext = new MainViewModel ();
+			BindingContext = new MainViewModel (DependencyService.Get<INavService> ());;
 
 			Title = "TripLog";
 			var itemTemplate = new DataTemplate (typeof( TextCell));
@@ -31,9 +33,16 @@ namespace TripLog.Views
 			entries.SetBinding (ListView.ItemsSourceProperty, "LogEntries");
 			entries.ItemTapped += async (sender, e) => {
 				var item = (TripLogEntry)e.Item;
-				await Navigation.PushAsync (new DetailPage (item));
+				_vm.ViewCommand.Execute(item);
 			};
 			Content = entries;
 		}
+		protected override async void OnAppearing ()
+		{
+			base.OnAppearing ();
+			// Initialize MainViewModel
+			if (_vm != null)
+				await _vm.Init();
+		}	
 	}
 }

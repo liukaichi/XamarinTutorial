@@ -10,9 +10,20 @@ namespace TripLog.Views
 		DetailViewModel _vm {
 			get { return BindingContext as DetailViewModel; }
 		}
-		public DetailPage (TripLogEntry entry)
+
+		readonly Map _map;
+
+		public DetailPage ()
 		{
-			BindingContext = new DetailViewModel (entry);
+			BindingContextChanged += (sender, args) =>
+			{
+				if (_vm == null) return;
+				_vm.PropertyChanged += (s, e) => {
+					if (e.PropertyName == "Entry")
+						UpdateMap ();
+				};
+			};
+			BindingContext = new DetailViewModel (DependencyService.Get<INavService> ());
 			Title = "Entry Details";
 			var mainLayout = new Grid {
 				RowDefinitions = {
@@ -27,16 +38,7 @@ namespace TripLog.Views
 					}
 				}
 			};
-			var map = new Map ();
-			// Center the map around the log entry's location
-			map.MoveToRegion (MapSpan.FromCenterAndRadius (
-				new Position (_vm.Entry.Latitude, _vm.Entry.Longitude), Distance.FromMiles (.5)));
-			// Place a pin on the map for the log entry's location
-			map.Pins.Add (new Pin {
-				Type = PinType.Place,
-				Label = _vm.Entry.Title,
-				Position = new Position (_vm.Entry.Latitude, _vm.Entry.Longitude)
-			});
+			_map = new Map ();
 
 			var title = new Label {
 				HorizontalOptions = LayoutOptions.Center
@@ -68,12 +70,30 @@ namespace TripLog.Views
 				BackgroundColor = Color.White,
 				Opacity = .8
 			};
-			mainLayout.Children.Add (map);
+			mainLayout.Children.Add (_map);
 			mainLayout.Children.Add (detailsBg, 0, 1);
 			mainLayout.Children.Add (details, 0, 1);
-			Grid.SetRowSpan (map, 3);
+			Grid.SetRowSpan (_map, 3);
 			Content = mainLayout;
 
+		}
+		void UpdateMap ()
+		{
+			if (_vm.Entry == null)
+				return;
+			// Center the map around the log entry's location
+			_map.MoveToRegion (MapSpan.FromCenterAndRadius (
+				new Position (_vm.Entry.Latitude,
+					_vm.Entry.Longitude),
+				Distance.FromMiles (.5)
+			));
+			// Place a pin on the map for the log entry's location
+			_map.Pins.Add (new Pin {
+				Type = PinType.Place,
+				Label = _vm.Entry.Title,
+				Position = new Position (_vm.Entry.Latitude,
+					_vm.Entry.Longitude)
+			});
 		}
 	}
 

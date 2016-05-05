@@ -16,7 +16,7 @@ namespace TripLog.Views
 
 			Title = "New Entry"; 
 			// Form fields 
-			BindingContext = new NewEntryViewModel ();
+			BindingContext = new NewEntryViewModel (DependencyService.Get<INavService> ());
 			var title = new EntryCell { Label = "Title" };
 			title.SetBinding (EntryCell.TextProperty, "Title", BindingMode.TwoWay);
 			var latitude = new EntryCell { Label = "Latitude", Keyboard = Keyboard.Numeric };

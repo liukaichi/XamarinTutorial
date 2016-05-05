@@ -17,7 +17,7 @@ namespace TripLog.Droid
 		{
 			base.OnCreate (bundle);
 
-			Xamarin.FormsMaps.Init (this,bundle);
+			Xamarin.FormsMaps.Init ();
 			global::Xamarin.Forms.Forms.Init (this, bundle);
 
 			LoadApplication (new App ());

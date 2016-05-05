@@ -1,12 +1,18 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace TripLog
 {
-	public class DetailViewModel : BaseViewModel
+	public class DetailViewModel : BaseViewModel<TripLogEntry>
 	{
-		public DetailViewModel (TripLogEntry entry)
+		public DetailViewModel () : base()
 		{
-			Entry = entry;
+			
+		}
+
+		public override async Task Init (TripLogEntry logEntry)
+		{
+			Entry = logEntry;
 		}
 
 		TripLogEntry _entry;

@@ -1,5 +1,6 @@
-﻿using System;
-using Xamarin.Forms;
+﻿using Xamarin.Forms;
+using System.Threading.Tasks;
+using System;
 
 namespace TripLog
 {
@@ -10,7 +11,10 @@ namespace TripLog
 			Date = DateTime.Today;
 			Rating = 1;
 		}
-
+		public override async Task Init ()
+		{
+			
+		}
 		Command _saveCommand;
 		public Command SaveCommand
 		{
@@ -20,7 +24,7 @@ namespace TripLog
 			}
 		}
 
-		void ExecuteSaveCommand()
+		async Task ExecuteSaveCommand()
 		{
 			var newItem = new TripLogEntry {
 				Title = this.Title,
@@ -31,6 +35,7 @@ namespace TripLog
 				Notes = this.Notes
 			};
 			// TODO: Implement logic to persist Entry in a later chapter.
+			await NavService.GoBack ();
 		}
 		bool CanSave () {
 			return !string.IsNullOrWhiteSpace (Title);
